@@ -1,0 +1,41 @@
+✅ What is Already Built & Tested (v1.9)
+⚙️ Pending Work (next-sprint)
+📦 How to Make It Professional for Business Use
+Branding & Customisation
+Add placeholders in index.html for a logo, company name, and primary colour (CSS variables).
+Provide a simple “branding pack” (logo SVG, color scheme) that clients can drop-in.
+Enterprise-Ready Deployment
+Publish to GitHub Pages with a clear Deploy section in the README (gh-pages branch).
+Offer a downloadable ZIP with the index.html plus a config.json that can pre-populate the Settings panel (e.g., default currency, preset framework list).
+Compliance Documentation
+Include Data-Processing Addendum explaining that all data stays in the browser and that AI calls go directly to the provider.
+Add a License file (MIT/Apache) and a Contributing guide.
+Support & SLA
+Set up a public GitHub Issues template for bug reports and feature requests.
+Publish a Service Level Agreement (SLA) document outlining response times for critical bugs.
+Packaging for Consultants
+Offer a white-label version (same code base, custom branding, and optional password protection).
+Provide a one-page Product Sheet summarising benefits (risk quantification, ROI optimisation, Five Eyes compliance).
+Quality Assurance
+Run a Lighthouse audit on the live demo site, target > 95 % performance.
+Add automated security scans (dependency-check, SRI verification) in the CI pipeline.
+Pricing & Licensing Model
+Define a freemium tier (demo mode only) and a paid tier (AI integration, branding, multi-assessment comparison).
+Offer annual subscriptions with a renewal reminder built into the UI (e.g., toast when license key nears expiry).
+User Training
+Record a short walkthrough video (YouTube/embedded) showing: start → context → quiz → results → export.
+Supply a FAQ addressing common concerns: “Do my data leave the browser?”, “Is the AI cheap?”, “How to reset the assessment?”.
+Next Steps for You
+Prioritise the pending items – start with the Sector-Specific Questions and Multi-Assessment Comparison, as they deliver the highest business value.
+Create a branding guide (logo, colours) and add the placeholders to index.html.
+Add the legal documents (Terms, DPA, License) to the repo root.
+Set up a GitHub Actions workflow to run Playwright tests and generate a release tag.
+Prepare a short demo video (≤ 2 min) and embed it in the README for prospects.
+With these actions completed, CyberScore Pro v1.9 will be a polished, enterprise-ready product ready for commercial rollout and client adoption.
+Summary of the requested enhancements and current state (based on the source code you provided)
+Immediate actions you can approve
+Fix the Demo button – add the missing onclick handler.
+Add regional risk factor – create a REGION_RISK constant and adjust the risk aggregation function.
+Externalise the framework list – move ALL_FRAMEWORKS to frameworks.json and load it at runtime.
+Create the policy-review domain – inject a new domain object with three policy questions.
+Add supplier-evidence UI – small file-upload component in the Supply Chain section.
