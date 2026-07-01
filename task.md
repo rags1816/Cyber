@@ -1,0 +1,10 @@
+- [ ] Fix Demo button (add onclick handler)
+- [ ] Add risk_multipliers.json with defaults (1.0‑1.3 range) and load it
+- [ ] Create Risk Settings tab after questionnaire tabs
+- [ ] Implement UI inputs for region/sector factors with defaults and override handling
+- [ ] Update calculateScores() to apply multipliers
+- [ ] Add Policy Review domain questions (3)
+- [ ] Add Supplier Evidence UI with file input, thumbnail preview (image & PDF first page), download button
+- [ ] Add Quick Reference Guide modal linking QUICK_REFERENCE.md
+- [ ] Update README.md with new sections
+- [ ] Verify changes in browser (manual & Playwright placeholder)
