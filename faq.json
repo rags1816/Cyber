@@ -1,0 +1,7 @@
+{
+  "How do I start the assessment?": "Click the ‘Start Assessment’ button on the welcome screen. The Reference Guide will appear providing step‑by‑step instructions.",
+  "How do I upload evidence?": "Open the ‘Supplier Evidence’ tab, click ‘Add File’, select a PDF, DOCX or image (max 1 MB). A thumbnail preview will be shown and you can download the original file later.",
+  "How do I change risk multipliers?": "Open the ‘Risk Settings’ tab from the top toolbar, adjust the numeric inputs, and click ‘Apply’. A warning toast will inform you that scores will change.",
+  "What is the AI Toolbar?": "It is a top‑toolbar dropdown that opens a small chat‑style panel where you can type common questions. Answers are drawn from this FAQ list.",
+  "How do I generate the PDF report?": "Click the ‘⬇ PDF’ button on the results screen. The current Recommendations and scores will be included in the exported document."
+}
