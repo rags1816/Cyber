@@ -2685,30 +2685,43 @@ function buildGapDB(){
   }
 }
 
-const MOCK_AI_SUMMARY = `
+function getMockAISummary(){
+  const org = ctx.org || 'the organisation';
+  const band = overallCyber>=90?'Leading':overallCyber>=75?'Advanced':overallCyber>=60?'Established':overallCyber>=40?'Developing':'Critical';
+  const domainEntries = Object.entries(scores||{});
+  const weakest = domainEntries.length ? domainEntries.sort((a,b)=>a[1]-b[1]).slice(0,2).map(([id])=>DOMAINS.find(d=>d.id===id)?.name||id).join(' and ') : 'Access Control and Cloud & Infrastructure Protection';
+  return `
 ### Current Security Posture & Risks
-Based on the completed assessment, the client has an overall CyberScore of 58/100, indicating a CMMI Level 2 (Managed) security posture. 
+Based on the completed assessment, ${org} has an overall CyberScore of ${overallCyber||'--'}/100, indicating a ${band} security posture.
 
-The primary security weaknesses are in Access Control and Cloud & Infrastructure Protection. Specifically, the lack of full MFA deployment across administrative accounts and missing EDR endpoint coverage pose critical ransomware and data breach vulnerabilities.
+The primary security weaknesses are in ${weakest}. Specifically, the lack of full MFA deployment across administrative accounts and missing EDR endpoint coverage pose critical ransomware and data breach vulnerabilities.
 
 ### Priority Action Plan
 1. Enforce MFA tenant-wide across all user accounts and administrative interfaces.
 2. Deploy Endpoint Detection & Response (EDR) software on all production systems.
 `;
+}
 
-const MOCK_AI_COST = `
-An annualised Cost of Inaction of ${fmtCurr(5000000 * 0.03)} represents a significant financial exposure. This risk is driven by GDPR regulatory penalty risk and business interruption losses from phishing or supply chain compromise. Implementing MFA and EDR can mitigate this exposure by up to 75%, saving an estimated 70% of residual breach costs annually.
+function getMockAICost(){
+  return `
+An annualised Cost of Inaction of ${fmtCurr(costOfInaction||5000000*0.03)} for ${ctx.org||'this organisation'} represents a significant financial exposure. This risk is driven by GDPR regulatory penalty risk and business interruption losses from phishing or supply chain compromise. Implementing MFA and EDR can mitigate this exposure by up to 75%, saving an estimated 70% of residual breach costs annually.
 `;
+}
 
-const MOCK_AI_BOARD = `
+function getMockAIBoard(){
+  const org = ctx.org || 'the organisation';
+  const band = overallCyber>=90?'Leading':overallCyber>=75?'Advanced':overallCyber>=60?'Established':overallCyber>=40?'Developing':'Critical';
+  return `
 # Executive Board Report — Confidential
-**Posture Summary:** CyberScore of 58/100 (CMMI L2 - Managed). Core hygiene is established, but critical security gaps remain in IAM and endpoint monitoring.
-**Top Financial Exposure:** Expected annualised cost of inaction (ALE) is \${fmtCurr(costOfInaction)}, driven by data breach fines and customer attrition.
+**Organisation:** ${org}
+**Posture Summary:** CyberScore of ${overallCyber||'--'}/100 (${band}). Core hygiene is established, but critical security gaps remain in IAM and endpoint monitoring.
+**Top Financial Exposure:** Expected annualised cost of inaction (ALE) is ${fmtCurr(costOfInaction||0)}, driven by data breach fines and customer attrition.
 **Recommendations:**
 - Enforce tenant-wide MFA for all admin accounts (Cost: £4,500 / Est. Risk Reduction: 15%)
 - Install EDR endpoint agents on production systems (Cost: £12,000 / Est. Risk Reduction: 20%)
 - Conduct external vulnerability scanning (Cost: £3,000 / Est. Risk Reduction: 8%)
 `;
+}
 
 const MOCK_GAP_INSIGHTS = {
   'g-mfa': 'Deploying MFA is the single most critical action to prevent external account takeover.',
@@ -2765,7 +2778,7 @@ async function generateAISummary(){
   
   if (isDemoActive) {
     if(sub) sub.textContent = `Powered by Mock AI (Demo Mode)`;
-    el.innerHTML = `<div class="ai-content"><p>${MOCK_AI_SUMMARY.trim().replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p></div>`;
+    el.innerHTML = `<div class="ai-content"><p>${getMockAISummary().trim().replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p></div>`;
     return;
   }
   
@@ -2794,7 +2807,7 @@ async function generateCostNarrative(){
   const activeProv = getEffectiveProvider();
   
   if (isDemoActive) {
-    el.innerHTML = `<div class="ai-content"><p>${MOCK_AI_COST.trim()}</p></div>`;
+    el.innerHTML = `<div class="ai-content"><p>${getMockAICost().trim()}</p></div>`;
     return;
   }
   
@@ -2805,7 +2818,7 @@ async function generateCostNarrative(){
   
   el.innerHTML='<div class="ai-loading"><span class="spin"></span> Generating cost narrative…</div>';
   const system=`You are a cyber risk CFO advisor. Write one clear paragraph (max 100 words) explaining the cost of inaction in business terms for this ${ctx.sector||'organisation'}. Be specific about the numbers. No preamble.`;
-  const prompt=`Sector: ${ctx.sector}. Revenue: ${fmtCurr(ctx.revenue||5000000)}. Cost of inaction (ALE): ${fmtCurr(costOfInaction)}. Risk score: ${overallRisk}/100. Top gap: ${GAP_DB[0]?.title||'security controls'}. Summarise the financial exposure in CFO-level language.`;
+  const prompt=`Organisation: ${ctx.org||'the client'}. Sector: ${ctx.sector}. Revenue: ${fmtCurr(ctx.revenue||5000000)}. Cost of inaction (ALE): ${fmtCurr(costOfInaction)}. Risk score: ${overallRisk}/100. Top gap: ${GAP_DB[0]?.title||'security controls'}. Summarise the financial exposure in CFO-level language.`;
   try{
     const text=await runAI(system,prompt);
     el.innerHTML='<div class="ai-content"><p>'+text.trim()+'</p></div>';
@@ -3293,7 +3306,7 @@ async function generateBoardReport(){
   const activeKey = getEffectiveKey();
   
   if (isDemoActive) {
-    el.innerHTML = '<div class="ai-content">' + MOCK_AI_BOARD.trim().split(/\n\n+/).map(p=>`<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join('') + '</div>';
+    el.innerHTML = '<div class="ai-content">' + getMockAIBoard().trim().split(/\n\n+/).map(p=>`<p>${p.trim().replace(/\n/g,'<br>')}</p>`).join('') + '</div>';
     return;
   }
   
@@ -3419,9 +3432,9 @@ function downloadPDF(){
   doc.setTextColor(255,255,255);doc.setFontSize(9);doc.setFont('helvetica','bold');doc.text('Security Action Roadmap Milestones',M+3,y+4.2);y+=10;
   
   const milestones = [
-    { period: 'Immediate (0–3 months)', icon: '🔴', actions: GAP_DB.filter(g=>g.severity==='critical').slice(0,2) },
-    { period: 'Short-term (3–6 months)', icon: '🟠', actions: GAP_DB.filter(g=>g.severity==='high').slice(0,2) },
-    { period: 'Medium-term (6–12 months)', icon: '🟢', actions: GAP_DB.filter(g=>g.severity==='medium').slice(0,2) }
+    { period: 'Immediate (0-3 months)', icon: '[!]', actions: GAP_DB.filter(g=>g.severity==='critical').slice(0,2) },
+    { period: 'Short-term (3-6 months)', icon: '[~]', actions: GAP_DB.filter(g=>g.severity==='high').slice(0,2) },
+    { period: 'Medium-term (6-12 months)', icon: '[+]', actions: GAP_DB.filter(g=>g.severity==='medium').slice(0,2) }
   ];
   
   milestones.forEach(m => {
